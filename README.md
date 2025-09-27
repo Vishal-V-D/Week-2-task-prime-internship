@@ -114,9 +114,9 @@ npx ts-node-dev src/index.ts
 
 ```
 
-# User Service → http://localhost:4000
+## User Service → http://localhost:4000
 
-# Course Service → http://localhost:5000
+## Course Service → http://localhost:5000
 
 ## API Documentation
 
@@ -157,7 +157,7 @@ Swagger documentation is available when services are running:
 ---
 
 ## Logging
-- `morgan` is used for HTTP request logging  
+- `morgan`,`winston` is used for HTTP request logging  
 - Logs are stored in `logs/app.log` within each service
 
 ---
