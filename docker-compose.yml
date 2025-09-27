@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8
+    container_name: backend-mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: backend_db
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+  user-service:
+    build: ./user-service
+    container_name: user-service
+    ports:
+      - "4000:4000"
+    env_file:
+      - ./user-service/.env
+    depends_on:
+      - mysql
+
+  course-service:
+    build: ./course-service
+    container_name: course-service
+    ports:
+      - "5000:5000"
+    env_file:
+      - ./course-service/.env
+    depends_on:
+      - mysql
+
+volumes:
+  mysql-data:
