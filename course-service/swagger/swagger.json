@@ -1,0 +1,144 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Smart Learning Platform API",
+    "version": "1.1.0"
+  },
+  "servers": [
+    { "url": "http://localhost:4000/api" }
+  ],
+  "paths": {
+    "/courses": {
+      "get": {
+        "summary": "Get all courses",
+        "parameters": [
+          { "name": "page", "in": "query", "schema": { "type": "integer" } },
+          { "name": "limit", "in": "query", "schema": { "type": "integer" } },
+          { "name": "category", "in": "query", "schema": { "type": "string" } },
+          { "name": "sort", "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "List of courses" } }
+      },
+      "post": {
+        "summary": "Create a new course",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Course" } } }
+        },
+        "responses": { "201": { "description": "Created course" } }
+      }
+    },
+    "/courses/{id}": {
+      "get": {
+        "summary": "Get course by ID",
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }],
+        "responses": { "200": { "description": "Course object" }, "404": { "description": "Not found" } }
+      },
+      "put": {
+        "summary": "Update course by ID",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }],
+        "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Course" } } } },
+        "responses": { "200": { "description": "Updated course" } }
+      },
+      "delete": {
+        "summary": "Delete course by ID",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }],
+        "responses": { "200": { "description": "Deleted" } }
+      }
+    },
+    "/enrollments": {
+      "get": {
+        "summary": "Get all enrollments (teacher only)",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "page", "in": "query", "schema": { "type": "integer" } },
+          { "name": "limit", "in": "query", "schema": { "type": "integer" } },
+          { "name": "studentEmail", "in": "query", "schema": { "type": "string" } },
+          { "name": "sort", "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "List of enrollments" } }
+      },
+      "post": {
+        "summary": "Create enrollment (student only)",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "studentName": { "type": "string" },
+                  "studentEmail": { "type": "string" },
+                  "courseId": { "type": "integer", "description": "Select course from existing list" }
+                },
+                "required": ["studentName", "studentEmail", "courseId"]
+              }
+            }
+          }
+        },
+        "responses": { "201": { "description": "Created enrollment" } }
+      }
+    },
+    "/enrollments/{id}": {
+      "get": {
+        "summary": "Get enrollment by ID (teacher only)",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }],
+        "responses": { "200": { "description": "Enrollment" } }
+      },
+      "put": {
+        "summary": "Update enrollment (teacher only)",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "studentName": { "type": "string" },
+                  "studentEmail": { "type": "string" },
+                  "courseId": { "type": "integer" }
+                }
+              }
+            }
+          }
+        },
+        "responses": { "200": { "description": "Updated" } }
+      },
+      "delete": {
+        "summary": "Delete enrollment (student only)",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }],
+        "responses": { "200": { "description": "Deleted" } }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Course": {
+        "type": "object",
+        "properties": {
+          "title": { "type": "string" },
+          "description": { "type": "string" },
+          "duration": { "type": "number" },
+          "category": { "type": "string" },
+          "rating": { "type": "number" }
+        },
+        "required": ["title", "description", "duration"]
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}
