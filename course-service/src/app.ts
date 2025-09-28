@@ -8,7 +8,7 @@ import { AppDataSource } from "./config/db"
 import { requestLoggerMiddleware } from "./middleware/logger"
 import { apiKeyCheck } from "./middleware/apiKeyCheck"
 import cors from "cors"
-
+import { AnalyticsController } from "./controllers/analytics.controller";
 
 const app = express()
 app.use(cors())
@@ -20,9 +20,8 @@ app.use(morgan("dev"))
 
 app.use(requestLoggerMiddleware)
 
-app.get("/api/analytics", apiKeyCheck, (req, res) => {
-  res.json({ message: "Analytics data visible only with valid apiKey" })
-})
+
+app.get("/api/analytics", apiKeyCheck, AnalyticsController.getOverview);
 
 export const initializeApp = async () => {
   await AppDataSource.initialize()
